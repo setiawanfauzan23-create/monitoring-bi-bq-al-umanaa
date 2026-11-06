@@ -12,7 +12,7 @@
             --text-muted: #94a3b8;
             --accent-blue: #38bdf8;
             --accent-purple: #c084fc;
-            --success: #2cc71;
+            --success: #2ecc71;
             --warning: #fbbf24;
             --danger: #f87171;
         }
@@ -131,7 +131,6 @@
 </div>
 
 <div class="container">
-    <!-- WIDGET PANEL DASBOR STATISTIK -->
     <div class="stats-grid">
         <div class="stat-card">
             <h3>Total Kluster Log</h3>
@@ -152,7 +151,6 @@
     </div>
 
     <div class="main-layout">
-        <!-- FORM PANEL KIRI -->
         <div class="sidebar">
             <div class="card-box">
                 <h2>Input Presensi Studio</h2>
@@ -186,13 +184,11 @@
             </div>
         </div>
 
-        <!-- LOG MONITORING KANAN -->
         <div class="content-area">
             <div class="card-box">
                 <div class="table-header-actions">
                     <h2>Log Aktivitas Terintegrasi</h2>
                     <div class="controls">
-                        <!-- FITUR FILTER -->
                         <select id="filterProgram" onchange="filterTampilanLocal()">
                             <option value="Semua">Semua Cluster</option>
                             <option value="BI">Kluster BI Only</option>
@@ -214,4 +210,12 @@
                         </tr>
                     </thead>
                     <tbody id="tabelBody">
-                        <!-- Sinkronisasi Log Awan Firebase Masuk Otomatis -->
+                        <!-- Real-time data injection -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
