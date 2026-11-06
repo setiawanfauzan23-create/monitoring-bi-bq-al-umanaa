@@ -99,14 +99,66 @@
     </div>
 </div>
 
-<script>
-    // Logika simulasi penerimaan stream dari Studio API Al Umanaa
-    setTimeout(() => {
-        document.getElementById('statusLoader').style.display = 'none';
-        document.getElementById('countBI').innerText = '24 Log';
-        document.getElementById('countBQ').innerText = '21 Log';
-    }, 1500);
-</script>
+<script type="module">
+  import { initializeApp } from "https://gstatic.com";
+  import { initializeFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://gstatic.com";
 
-</body>
-</html>
+  const firebaseConfig = {
+    projectId: "acoustic-seer-601dl"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = initializeFirestore(app, {
+    databaseId: "ai-studio-monitoringbibqal-053e5bd3-cb5b-4420-a0c5-10f43436c8e1"
+  });
+
+  const form = document.getElementById('absensiForm');
+  const tabelBody = document.getElementById('tabelBody');
+
+  const q = query(collection(db, "absensi_santri"), orderBy("waktu", "desc"));
+  onSnapshot(q, (snapshot) => {
+      tabelBody.innerHTML = '';
+      let total = 0, hadir = 0, izin = 0, alfa = 0;
+
+      snapshot.forEach((doc) => {
+          const santri = doc.data();
+          total++;
+          if (santri.status === 'Hadir') hadir++;
+          else if (santri.status === 'Izin' || santri.status === 'Sakit') izin++;
+          else if (santri.status === 'Alfa') alfa++;
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td><strong>${santri.nama}</strong></td>
+              <td>${santri.program}</td>
+              <td>${santri.kelas}</td>
+              <td>${santri.waktu}</td>
+              <td><span class="badge ${santri.status.toLowerCase()}">${santri.status}</span></td>
+          `;
+          tabelBody.appendChild(row);
+      });
+
+      document.getElementById('statTotal').innerText = total;
+      document.getElementById('statHadir').innerText = hadir;
+      document.getElementById('statIzin').innerText = izin;
+      document.getElementById('statAlfa').innerText = alfa;
+  });
+
+  form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const nama = document.getElementById('namaSantri').value;
+      const program = document.getElementById('kategoriProgram').value;
+      const kelas = document.getElementById('kelasKamar').value;
+      const status = document.getElementById('statusKehadiran').value;
+      
+      const sekarang = new Date();
+      const waktu = sekarang.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+
+      try {
+          await addDoc(collection(db, "absensi_santri"), { nama, program, kelas, status, waktu });
+          form.reset();
+      } catch (error) {
+          alert("Gagal sinkron ke Firebase: " + error.message);
+      }
+  });
+</script>
